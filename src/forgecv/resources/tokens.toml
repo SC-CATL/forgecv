@@ -1,0 +1,58 @@
+# 设计令牌：颜色、间距、圆角、字体的唯一来源。
+
+[meta]
+version = 1
+
+[light]
+bg_canvas = "#f5f6f8"
+bg_surface = "#ffffff"
+bg_elevated = "#eef1f5"
+fg_default = "#1c2430"
+fg_muted = "#5c6a7a"
+border = "#d8dee6"
+accent = "#2f6fed"
+accent_hover = "#255bd0"
+accent_fg = "#ffffff"
+danger = "#c8342b"
+
+[dark]
+bg_canvas = "#161a1f"
+bg_surface = "#1e242b"
+bg_elevated = "#2a323b"
+fg_default = "#e8edf3"
+fg_muted = "#9aa8b6"
+border = "#333d48"
+accent = "#5b8cff"
+accent_hover = "#7aa1ff"
+accent_fg = "#0d1116"
+danger = "#f0655a"
+
+[high_contrast]
+bg_canvas = "#000000"
+bg_surface = "#0b0b0b"
+bg_elevated = "#1a1a1a"
+fg_default = "#ffffff"
+fg_muted = "#d0d0d0"
+border = "#7a7a7a"
+accent = "#ffe066"
+accent_hover = "#ffd633"
+accent_fg = "#000000"
+danger = "#ff6b6b"
+
+[space]
+xs = 4
+sm = 8
+md = 12
+lg = 20
+xl = 32
+
+[radius]
+sm = 4
+md = 8
+lg = 14
+
+[font]
+family = "Segoe UI"
+mono = "Consolas"
+body = 10
+title = 15

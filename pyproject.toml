@@ -1,0 +1,138 @@
+[project]
+name = "forgecv"
+version = "0.1.0"
+description = "工程师简历工坊：学历时间轴、技能举证、项目标签与 Word 导出"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "SC-CATL" }]
+dependencies = [
+    "PySide6>=6.6",
+    "SQLAlchemy>=2.0.30",
+    "alembic>=1.13",
+    "python-docx>=1.2.0",
+    "structlog>=24.1",
+    "tomli>=2.0.1; python_version < '3.11'",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-qt>=4.4",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "import-linter>=2.0",
+    "interrogate>=1.7",
+    "vulture>=2.11",
+    "pip-audit>=2.7",
+]
+
+[project.scripts]
+app = "forgecv.__main__:main"
+dev = "forgecv.app.cli:dev_main"
+doctor = "forgecv.platform.devtools.cli:doctor_main"
+
+[project.urls]
+Homepage = "https://github.com/SC-CATL/forgecv"
+Repository = "https://github.com/SC-CATL/forgecv"
+Issues = "https://github.com/SC-CATL/forgecv/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/forgecv"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers --strict-config"
+markers = ["integration: 需要外部依赖的测试", "ui: 需要 QApplication 的测试"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+omit = [
+    "src/forgecv/__main__.py",
+    "src/forgecv/app/bootstrap.py",
+    "src/forgecv/app/cli.py",
+    "src/forgecv/app/container.py",
+    "src/forgecv/app/window.py",
+    "src/forgecv/platform/devtools/*",
+    "src/forgecv/platform/selfcheck.py",
+    "src/forgecv/platform/ui/qt.py",
+    "src/forgecv/platform/ports/*",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 75
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "N", "UP", "B", "SIM", "ARG", "PTH",
+    "PL", "RUF", "ASYNC", "S", "D", "ANN",
+]
+ignore = [
+    "D203", "D213", "D415", "PLR0913", "ANN401", "PLC0415",
+    "RUF001", "RUF002", "RUF003", "UP017", "UP046",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "D", "ANN", "PLR2004", "SLF001", "ARG001", "ARG002"]
+"scripts/**" = ["D", "ANN", "S603", "S607", "E402"]
+"src/forgecv/platform/devtools/**" = ["D", "ANN"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+no_implicit_optional = true
+strict_equality = true
+plugins = []
+
+[[tool.mypy.overrides]]
+module = ["PySide2.*", "PySide6.*", "tomli"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+disallow_any_generics = false
+
+[tool.importlinter]
+root_package = "forgecv"
+
+[[tool.importlinter.contracts]]
+name = "横纵分层：app -> features -> platform"
+type = "layers"
+layers = [
+    "forgecv.app",
+    "forgecv.features",
+    "forgecv.platform",
+]
+
+[[tool.importlinter.contracts]]
+name = "platform 不得依赖 features"
+type = "forbidden"
+source_modules = ["forgecv.platform"]
+forbidden_modules = ["forgecv.features"]
+allow_indirect_imports = true
+
+[tool.interrogate]
+fail-under = 90
+exclude = ["tests", "scripts", ".venv"]
+ignore-init-method = true
+ignore-init-module = true

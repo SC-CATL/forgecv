@@ -1,0 +1,46 @@
+name: Bug 报告
+description: 报告可复现的问题
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先确认不是配置或数据问题；安全问题请走私密渠道，见 SECURITY.md。
+  - type: textarea
+    id: what
+    attributes:
+      label: 问题描述
+      description: 实际发生了什么，期望是什么
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 打开...
+        2. 点击...
+        3. 出现...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      placeholder: Windows 11 / Python 3.12.10 / PySide6 6.12
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志或截图
+      description: 隐藏个人信息后再粘贴
+    validations:
+      required: false
