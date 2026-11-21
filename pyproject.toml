@@ -116,7 +116,7 @@ disallow_any_generics = false
 root_package = "forgecv"
 
 [[tool.importlinter.contracts]]
-name = "横纵分层：app -> features -> platform"
+name = "layers: app -> features -> platform"
 type = "layers"
 layers = [
     "forgecv.app",
@@ -125,7 +125,7 @@ layers = [
 ]
 
 [[tool.importlinter.contracts]]
-name = "platform 不得依赖 features"
+name = "platform must not import features"
 type = "forbidden"
 source_modules = ["forgecv.platform"]
 forbidden_modules = ["forgecv.features"]
