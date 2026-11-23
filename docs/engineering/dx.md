@@ -62,6 +62,17 @@ python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple <包名>
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
+## 3.1 VS Code
+
+仓库自带 `.vscode/settings.json` 与 `.vscode/launch.json`：
+
+- 默认解释器固定为 `${workspaceFolder}/.venv/Scripts/python.exe`；
+- 运行 / 调试选 **ForgeCV (venv)**，不要用系统 Python；
+- 选 **ForgeCV 自检 (venv)** 可离屏跑 `--self-test`；
+- 已推荐 Python / debugpy / Ruff / mypy 扩展。
+
+修改配置后执行一次 `Developer: Reload Window` 生效。
+
 ## 4. 数据库
 
 | 环境 | 位置 |
