@@ -28,7 +28,8 @@ uv run dev
 
 已同步依赖后，也可以双击仓库根目录的 `run.bat`（自动迁移后启动）。
 
-注意：直接用系统 Python 运行 `python main.py` 会缺少依赖，请使用 `.venv` 或 `uv run`。
+注意：直接用系统 Python 运行 `python main.py` 时，启动器会自动切换到项目 `.venv`；
+如果自动切换失败，再用 `.venv\Scripts\python.exe main.py`。
 在 VS Code 里执行 `Python: Select Interpreter`，选择 `forgecv/.venv`。
 
 首次启动会自动建库并执行迁移，然后打开主窗口。左侧导航包含：

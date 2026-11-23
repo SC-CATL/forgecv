@@ -104,7 +104,7 @@ uv run python scripts/new_feature.py invoices
 |---|---|---|
 | `uv: 无法识别` | 未安装或不在 PATH | 装 uv 或把 Scripts 目录加入 PATH |
 | `ModuleNotFoundError: forgecv` | 未同步依赖 | `uv sync`；必要时 `uv run python -m forgecv` |
-| `ModuleNotFoundError: structlog` / `PySide6` | 用了系统 Python，而不是项目 `.venv` | 改用 `uv run dev`、`run.bat` 或 `.venv\Scripts\python.exe main.py` |
+| `ModuleNotFoundError: structlog` / `PySide6` | 启动器未成功切换解释器 | `main.py` 会自动切到 `.venv`；失败时用 `.venv\Scripts\python.exe main.py` 或 `run.bat` |
 | 下载卡住 | 默认 PyPI 慢 | 按第 2 节切镜像 |
 | 启动报 `could not find or load the Qt platform plugin "windows"` | 环境变量干扰或缺少 VC 运行库 | 清掉 `QT_PLUGIN_PATH`，安装 VC++ 2015-2022 运行库 |
 | 测试报无 `QApplication` | 未用离屏 | `$env:QT_QPA_PLATFORM="offscreen"` |

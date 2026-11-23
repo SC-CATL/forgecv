@@ -35,7 +35,7 @@ forgecv/
 ## 3. 启动链
 
 ```text
-main.py                                  # 薄启动器，只转发
+main.py                                  # 薄启动器：自动切到项目 .venv 后转发
 └─ forgecv.__main__:main                 # 解析 --self-test / --migrate / --dev / --mock
    ├─ --self-test -> platform.selfcheck   # 数据库、Qt 绑定、令牌自检
    └─ app.bootstrap.run                   # 安装异常钩子 -> QApplication -> Container
