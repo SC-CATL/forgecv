@@ -24,10 +24,12 @@ class PageRouter(QtCore.QObject):
         self._bound = False
 
     def register(self, route: str, title: str, factory: PageFactory) -> None:
-        """注册路由与页面工厂。"""
+        """注册路由与页面工厂；窗口已就绪时立即挂导航项。"""
         if route in self._factories:
             raise ValueError(f"重复路由：{route}")
         self._factories[route] = (title, factory)
+        if self._bound:
+            self._layout.add_route(route, title)
 
     def routes(self) -> tuple[str, ...]:
         """已注册的全部路由。"""
@@ -42,7 +44,9 @@ class PageRouter(QtCore.QObject):
             title, factory = self._factories[route]
             widget = factory()
             self._widgets[route] = widget
-            self._layout.add_page(route, title, widget)
+            if not self._layout.shell.has_route(route):
+                self._layout.add_route(route, title)
+            self._layout.set_page(route, widget)
         self._layout.set_route(route)
         self.navigated.emit(route)
         return widget
@@ -52,8 +56,12 @@ class PageRouter(QtCore.QObject):
         return self._widgets.get(route)
 
     def bind_shell(self) -> None:
-        """把主窗口导航点击接到路由，只连一次。"""
+        """挂载已注册导航项，并把点击接到路由，只连一次。"""
         if self._bound:
             return
-        self._layout.shell.nav_requested.connect(self.navigate)
+        shell = self._layout.shell
+        for route, (title, _) in self._factories.items():
+            if not shell.has_route(route):
+                self._layout.add_route(route, title)
+        shell.nav_requested.connect(self.navigate)
         self._bound = True

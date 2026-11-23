@@ -63,6 +63,8 @@ class SkillPage(QtWidgets.QWidget):
         """技能字段卡片。"""
         frame, card_layout = forms.card(parent)
         card_layout.addWidget(forms.title("技能详情", frame))
+        self._market = forms.muted("", frame)
+        card_layout.addWidget(self._market)
         body = forms.form()
         self._category = QtWidgets.QComboBox(frame)
         self._category.addItems(list(self._vm.categories))
@@ -137,9 +139,9 @@ class SkillPage(QtWidgets.QWidget):
         self._list.blockSignals(True)
         self._list.clear()
         for row in records:
-            item = QtWidgets.QListWidgetItem(
-                f"{row.name}\n{row.category} · {self._vm.levels.get(row.level, row.level)}"
-            )
+            label = self._vm.levels.get(row.level, row.level)
+            badge = f" · {row.market_tag}" if row.market_tag else ""
+            item = QtWidgets.QListWidgetItem(f"{row.name}\n{row.category} · {label}{badge}")
             item.setData(QtCore.Qt.ItemDataRole.UserRole, row.id)
             self._list.addItem(item)
         self._list.blockSignals(False)
@@ -193,6 +195,11 @@ class SkillPage(QtWidgets.QWidget):
         self._years.setValue(record.years if record.years is not None else -1)  # type: ignore[attr-defined]
         self._score.setValue(record.self_score if record.self_score is not None else -1)  # type: ignore[attr-defined]
         self._notes.setPlainText(record.notes)  # type: ignore[attr-defined]
+        self._market.setText(
+            f"{record.market_tag} · 本项目认可"  # type: ignore[attr-defined]
+            if record.market_tag  # type: ignore[attr-defined]
+            else ""
+        )
         self._delete.setEnabled(True)
 
     def _new(self) -> None:
@@ -204,6 +211,7 @@ class SkillPage(QtWidgets.QWidget):
         self._years.setValue(-1)
         self._score.setValue(-1)
         self._notes.clear()
+        self._market.clear()
         self._evidence.clear()
         self._delete.setEnabled(False)
 

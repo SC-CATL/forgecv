@@ -43,6 +43,35 @@ def test_nav_click_switches_route(qapp) -> None:
     ui.shutdown()
 
 
+def test_nav_lists_every_route_before_first_visit(qapp) -> None:
+    """启动后导航栏应列出全部路由，而不是只显示首页。"""
+    ui = UiManager()
+    shell = ui.create_shell("测试")
+    ui.pages.register("a", "A", lambda: QtWidgets.QLabel("a"))
+    ui.pages.register("b", "B", lambda: QtWidgets.QLabel("b"))
+    ui.pages.register("c", "C", lambda: QtWidgets.QLabel("c"))
+    ui.pages.navigate("a")
+    assert shell._nav.count() == 3
+    assert [shell._nav.item(i).text() for i in range(3)] == ["A", "B", "C"]
+    assert ui.pages.page("b") is None
+    seen: list[str] = []
+    ui.pages.navigated.connect(seen.append)
+    shell._nav.setCurrentRow(2)
+    assert seen == ["c"]
+    assert shell._stack.currentWidget() is ui.pages.page("c")
+    ui.shutdown()
+
+
+def test_routes_registered_before_shell_are_mounted(qapp) -> None:
+    """先注册路由、后建窗口时也要补齐导航项。"""
+    ui = UiManager()
+    ui.pages.register("a", "A", lambda: QtWidgets.QLabel("a"))
+    ui.pages.register("b", "B", lambda: QtWidgets.QLabel("b"))
+    shell = ui.create_shell("测试")
+    assert shell._nav.count() == 2
+    ui.shutdown()
+
+
 def test_duplicate_route_is_rejected(qapp) -> None:
     """重复注册路由立即失败。"""
     ui = UiManager()

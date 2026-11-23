@@ -26,12 +26,22 @@ def _tables(settings: Settings) -> set[str]:
         engine.dispose()
 
 
+def _columns(settings: Settings, table: str) -> set[str]:
+    """指定表的列名集合。"""
+    engine = create_engine_for(settings)
+    try:
+        return {column["name"] for column in inspect(engine).get_columns(table)}
+    finally:
+        engine.dispose()
+
+
 def test_upgrade_reaches_head(settings: Settings) -> None:
     """升级后版本与脚本目录一致。"""
     upgrade(settings)
     tables = _tables(settings)
     assert "app_settings" in tables
     assert {"candidate", "educations", "projects", "skills", "resume_versions"} <= tables
+    assert {"market_key", "market_tag"} <= _columns(settings, "skills")
     assert current_revision(settings) == head_revision(settings)
 
 

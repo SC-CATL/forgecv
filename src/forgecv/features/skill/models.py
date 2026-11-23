@@ -29,6 +29,8 @@ class Skill(Base, TimestampMixin):
     years: Mapped[float | None] = mapped_column(Float, nullable=True)
     self_score: Mapped[int | None] = mapped_column(Integer, nullable=True)
     notes: Mapped[str] = mapped_column(Text, default="", nullable=False)
+    market_key: Mapped[str] = mapped_column(String(60), default="", index=True, nullable=False)
+    market_tag: Mapped[str] = mapped_column(String(40), default="", nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
 

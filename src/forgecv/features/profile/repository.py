@@ -25,6 +25,16 @@ class ProfileRepository:
         with session_scope(self._sessions) as session:
             return session.get(Candidate, CANDIDATE_ID)
 
+    def ensure_candidate(self) -> Candidate:
+        """确保单候选人占位行存在，供其他切片写入外键。"""
+        with session_scope(self._sessions) as session:
+            row = session.get(Candidate, CANDIDATE_ID)
+            if row is None:
+                row = Candidate(id=CANDIDATE_ID, full_name="")
+                session.add(row)
+                session.flush()
+            return row
+
     def save_candidate(self, data: CandidateInput) -> Candidate:
         """按固定 id 新建或覆盖候选人。"""
         with session_scope(self._sessions) as session:

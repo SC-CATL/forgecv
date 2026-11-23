@@ -7,9 +7,8 @@ from forgecv.features.project.service import ProjectService
 from forgecv.features.skill.models import SKILL_CATEGORIES, Skill
 from forgecv.features.skill.schemas import EvidenceInput, SkillInput
 from forgecv.features.skill.service import SkillService
+from forgecv.platform.ui.kit.format import LEVEL_LABELS
 from forgecv.platform.ui.qt import QtCore, Signal
-
-LEVEL_LABELS = {1: "了解", 2: "熟悉", 3: "熟练", 4: "精通"}
 
 
 class SkillViewModel(QtCore.QObject):

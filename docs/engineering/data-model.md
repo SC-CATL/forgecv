@@ -25,6 +25,7 @@ candidate 1 ─── n educations
                                 └── n snapshots
 attachments（按 owner_type + owner_id 挂到任意实体）
 app_settings（键值配置）
+skills.market_key ──> 内置技能市场目录（代码常量，无外键）
 ```
 
 ## 3. 表定义
@@ -135,9 +136,15 @@ app_settings（键值配置）
 | `years` | REAL | 可空 | 使用年限 |
 | `self_score` | INTEGER | 可空 | 0–100，自评；雷达图标注「自评」 |
 | `notes` | TEXT | 可空 | |
+| `market_key` | TEXT(60) | NOT NULL, 默认空 | 市场技能标识；空表示手工录入 |
+| `market_tag` | TEXT(40) | NOT NULL, 默认空 | 市场认证标签；空表示非市场技能 |
 | `sort_order` | INTEGER | NOT NULL | |
 
 唯一约束：`(candidate_id, category, name)`。
+
+> 技能市场目录是代码内置参考数据（`features/market/catalog.py`），不单独建表；
+> 学习状态由 `skills.market_key` 与 `skills.market_tag` 持久化。市场技能被删除后
+> 仍保留标签，方便在简历里识别来源；再次学习不会重复插入。
 
 ### 3.8 `skill_evidence` — 技能证据链
 
@@ -231,7 +238,7 @@ app_settings（键值配置）
 - `project_metrics(project_id, sort_order)`
 - `tags(dimension)`
 - `project_tags(tag_id)`（主键已覆盖 project_id 前缀）
-- `skills(candidate_id, category, sort_order)`
+- `skills(candidate_id, category, sort_order)`、`skills(market_key)`
 - `skill_evidence(skill_id)`、`skill_evidence(project_id)`
 - `resume_items(version_id, sort_order)`
 - `snapshots(version_id, created_at)`
@@ -243,6 +250,7 @@ app_settings（键值配置）
 |---|---|---|
 | `0001` | `app_settings` | 已完成 |
 | `0002` | 候选人 / 学历 / 经历 / 项目 / 标签 / 技能 / 简历 / 快照 / 附件 | 已完成（M1） |
+| `0003` | `skills.market_key` / `skills.market_tag` 与市场索引 | 已完成（技能市场） |
 
 规则：
 1. 一次迁移只做一件事，必须提供 `downgrade`。

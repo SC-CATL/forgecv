@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from forgecv.features.experience.api import build_service as build_experience
+from forgecv.features.market.api import build_service as build_market
 from forgecv.features.project.api import build_service as build_project
 from forgecv.features.project.schemas import ProjectInput
 from forgecv.features.skill.api import build_service
@@ -55,6 +56,18 @@ def test_create_skill_and_evidence(
 
     page._delete_current()
     assert page._vm.rows == []
+
+
+def test_market_skill_shows_certification_badge(
+    qtbot, sessions: SessionFactory, candidate: int
+) -> None:
+    """市场学习的技能在技能矩阵里显示认证标签。"""
+    assert build_market(sessions).learn("python").is_ok
+    page = _page(sessions)
+    qtbot.addWidget(page)
+    assert page._list.count() == 1
+    assert "市场认证" in page._list.item(0).text()
+    assert "市场认证" in page._market.text()
 
 
 def test_save_without_selection_keeps_form(

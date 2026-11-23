@@ -21,6 +21,10 @@ class ProfileService:
         """读取候选人，未建档返回 None。"""
         return self._repository.get_candidate()
 
+    def ensure(self) -> Candidate:
+        """确保候选人占位行存在，避免其他切片写入时外键失败。"""
+        return self._repository.ensure_candidate()
+
     def save(self, data: CandidateInput) -> Result[Candidate, ValidationError]:
         """校验并保存候选人信息。"""
         name = clean(data.full_name)

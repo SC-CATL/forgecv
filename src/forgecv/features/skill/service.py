@@ -37,6 +37,42 @@ class SkillService:
             return Result.err(ValidationError("该分类下已存在同名技能", field="name"))
         return Result.ok(self._repository.add(validated))
 
+    def learn_market_skill(
+        self,
+        *,
+        name: str,
+        category: str,
+        level: int,
+        notes: str,
+        market_key: str,
+        market_tag: str,
+    ) -> Result[Skill, ValidationError]:
+        """学习市场技能；同名技能直接补上市场标签。"""
+        key = clean(market_key)
+        if not key:
+            return Result.err(ValidationError("市场技能标识不能为空", field="market_key"))
+        validated = self._validate(
+            SkillInput(name=name, category=category, level=level, notes=notes)
+        )
+        if isinstance(validated, ValidationError):
+            return Result.err(validated)
+        existing = self._repository.find_by_name(validated.name)
+        if existing is None:
+            row = self._repository.add(
+                validated, market_key=key, market_tag=clean(market_tag)
+            )
+            return Result.ok(row)
+        if existing.market_key == key:
+            return Result.ok(existing)
+        updated = self._repository.set_market(existing.id, key, clean(market_tag))
+        if updated is None:
+            return Result.err(ValidationError(f"技能不存在：{existing.id}"))
+        return Result.ok(updated)
+
+    def learned_market_keys(self) -> set[str]:
+        """已加入技能矩阵的市场技能标识。"""
+        return {row.market_key for row in self.list_all() if row.market_key}
+
     def update(self, skill_id: int, data: SkillInput) -> Result[Skill, ValidationError]:
         """校验后覆盖技能。"""
         validated = self._validate(data)

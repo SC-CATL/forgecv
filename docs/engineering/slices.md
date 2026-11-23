@@ -42,6 +42,20 @@ M1 阶段先落地 `models / schemas / repository / service / api`；`viewmodel`
 
 雷达口径见 [`scoring.md`](scoring.md)。
 
+### 技能市场（只读目录 + 写入技能）
+
+| 项 | 内容 |
+|---|---|
+| 路由 | `market`，标题「技能市场」 |
+| 目录 | `features/market/catalog.py` 内置，不建表 |
+| 数据 | `skills.market_key` / `skills.market_tag`（迁移 `0003`） |
+| 对外 API | `build_service(sessions)`、`register(host)` |
+| 能力 | 按分类浏览项目认可技能；学习后写入技能矩阵并打「市场认证」标签 |
+| 测试 | `tests/unit/test_market_service.py`、`tests/ui/test_market_page.py` |
+
+学习动作统一走 `skill.api`，市场切片不直接读写技能表；同名技能已存在时保留原熟练度，
+只补市场标识与标签。
+
 ### M4 新增（简历编排）
 
 | 模块 | 文件 | 职责 | 测试 |
@@ -63,6 +77,7 @@ M1 阶段先落地 `models / schemas / repository / service / api`；`viewmodel`
 | 项目库 | `project` | 已完成 | 已完成（M2） |
 | 标签管理 | `tag` | 已完成 | 已完成（M2） |
 | 技能矩阵 | `skill` | 已完成 | 已完成（M3） |
+| 技能市场 | `market` | 内置目录，无独立表 | 已完成（学习写入技能矩阵） |
 | 概览 / 雷达 | `dashboard` | 只读聚合，已完成 | 已完成（M3） |
 | 简历版本 | `resume` | 已完成 | 已完成（M4） |
 | Word 导出 | `export` | 已完成 | 已完成（M5） |

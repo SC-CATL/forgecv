@@ -43,11 +43,41 @@ class SkillRepository:
             )
             return session.scalar(statement)
 
-    def add(self, data: SkillInput) -> Skill:
-        """新增技能。"""
+    def find_by_name(self, name: str) -> Skill | None:
+        """跨分类按名称查找，避免市场学习生成同名重复技能。"""
         with session_scope(self._sessions) as session:
-            row = Skill(candidate_id=CANDIDATE_ID, **asdict(data))
+            statement = (
+                select(Skill)
+                .where(Skill.candidate_id == CANDIDATE_ID, Skill.name == name)
+                .order_by(Skill.id)
+            )
+            return session.scalar(statement)
+
+    def add(
+        self, data: SkillInput, *, market_key: str = "", market_tag: str = ""
+    ) -> Skill:
+        """新增技能；市场技能额外写入来源与认证标签。"""
+        with session_scope(self._sessions) as session:
+            row = Skill(
+                candidate_id=CANDIDATE_ID,
+                market_key=market_key,
+                market_tag=market_tag,
+                **asdict(data),
+            )
             session.add(row)
+            session.flush()
+            return row
+
+    def set_market(
+        self, skill_id: int, market_key: str, market_tag: str
+    ) -> Skill | None:
+        """把已有技能标记为市场认证。"""
+        with session_scope(self._sessions) as session:
+            row = session.get(Skill, skill_id)
+            if row is None:
+                return None
+            row.market_key = market_key
+            row.market_tag = market_tag
             session.flush()
             return row
 

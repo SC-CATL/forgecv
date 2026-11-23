@@ -1,17 +1,15 @@
-"""开发命令入口：`dev` 先迁移再进窗口。"""
+"""开发命令入口：`dev` 迁移与窗口启动都交给 bootstrap。"""
 
 from __future__ import annotations
 
 from dataclasses import replace
 
-from forgecv.platform.adapters.db.migrate import upgrade
 from forgecv.platform.config import load_settings
 
 
 def dev_main() -> int:
-    """一键开发启动：迁移到 head，再启动应用。"""
+    """一键开发启动：标记开发模式后启动应用。"""
     settings = replace(load_settings(), dev=True)
-    upgrade(settings)
     from forgecv.app.bootstrap import run
 
     return run(settings)

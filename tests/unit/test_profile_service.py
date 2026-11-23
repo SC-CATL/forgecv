@@ -21,6 +21,16 @@ def test_save_rejects_bad_email(sessions: SessionFactory) -> None:
     assert not result.is_ok
 
 
+def test_ensure_candidate_is_idempotent(sessions: SessionFactory) -> None:
+    """空库也能建出固定 id 的候选人占位行。"""
+    service = build_service(sessions)
+    assert service.load() is None
+    first = service.ensure()
+    second = service.ensure()
+    assert first.id == second.id == 1
+    assert service.load() is not None
+
+
 def test_save_and_load_roundtrip(sessions: SessionFactory) -> None:
     """保存后能读回并清理空白。"""
     service = build_service(sessions)

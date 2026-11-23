@@ -32,13 +32,30 @@ class ShellWindow(QtWidgets.QMainWindow):
         self.statusBar().showMessage("就绪")
         self._nav.currentRowChanged.connect(self._emit_route)
 
-    def add_page(self, route: str, title: str, widget: QtWidgets.QWidget) -> None:
-        """注册页面，导航与栈同步增长。"""
+    def add_route(self, route: str, title: str) -> None:
+        """只挂导航项与占位页，真实页面按需替换。"""
         if route in self._routes:
             raise ValueError(f"重复路由：{route}")
         self._routes.append(route)
+        self._nav.blockSignals(True)
         self._nav.addItem(title)
-        self._stack.addWidget(widget)
+        self._nav.blockSignals(False)
+        self._stack.addWidget(QtWidgets.QWidget())
+
+    def add_page(self, route: str, title: str, widget: QtWidgets.QWidget) -> None:
+        """注册页面，导航与栈同步增长。"""
+        self.add_route(route, title)
+        self.set_page(route, widget)
+
+    def set_page(self, route: str, widget: QtWidgets.QWidget) -> None:
+        """用真实页面替换占位页，保持导航与页面栈下标一致。"""
+        index = self._routes.index(route)
+        placeholder = self._stack.widget(index)
+        self._stack.insertWidget(index, widget)
+        if placeholder is not None:
+            self._stack.removeWidget(placeholder)
+            placeholder.deleteLater()
+        self._stack.setCurrentIndex(index)
 
     def has_route(self, route: str) -> bool:
         """路由是否已注册。"""
@@ -79,9 +96,17 @@ class LayoutService(QtCore.QObject):
             self._shell = ShellWindow(title)
         return self._shell
 
+    def add_route(self, route: str, title: str) -> None:
+        """把导航项与占位页加入主窗口。"""
+        self.shell.add_route(route, title)
+
     def add_page(self, route: str, title: str, widget: QtWidgets.QWidget) -> None:
         """把页面加入主窗口。"""
         self.shell.add_page(route, title, widget)
+
+    def set_page(self, route: str, widget: QtWidgets.QWidget) -> None:
+        """用真实页面替换占位页。"""
+        self.shell.set_page(route, widget)
 
     def set_route(self, route: str) -> None:
         """切换当前页面。"""

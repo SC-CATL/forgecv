@@ -8,6 +8,7 @@ from forgecv.features.dashboard.api import register as register_dashboard
 from forgecv.features.education.api import register as register_education
 from forgecv.features.experience.api import register as register_experience
 from forgecv.features.export.api import register as register_export
+from forgecv.features.market.api import register as register_market
 from forgecv.features.profile.api import register as register_profile
 from forgecv.features.project.api import register as register_project
 from forgecv.features.resume.api import register as register_resume
@@ -33,6 +34,7 @@ def build_window(container: Container) -> ShellWindow:
     register_project(container)
     register_tag(container)
     register_skill(container)
+    register_market(container)
     register_resume(container)
     register_export(container)
     register_snapshot(container)

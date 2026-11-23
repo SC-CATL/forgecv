@@ -5,6 +5,12 @@ from __future__ import annotations
 from datetime import date
 
 PLACEHOLDER = "—"
+LEVEL_LABELS = {1: "了解", 2: "熟悉", 3: "熟练", 4: "精通"}
+
+
+def level_label(value: int) -> str:
+    """熟练度数字转展示文案。"""
+    return LEVEL_LABELS.get(value, str(value))
 
 
 def short_date(value: date | None) -> str:

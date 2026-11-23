@@ -4,6 +4,19 @@
 
 ## [Unreleased]
 
+### Added
+
+- 技能市场页（`market`）：按分类浏览项目认可的技能，一键学习后写入技能矩阵。
+- 技能新增 `market_key` / `market_tag` 字段（迁移 `0003`），市场技能在矩阵中显示「市场认证」。
+- 学习市场技能复用技能切片校验：重复学习幂等，同名技能保留原熟练度并补认证标签。
+
+### Fixed
+
+- 图形启动统一在 `bootstrap.run` 中执行迁移，修复直接运行 `main.py` / `uv run app`
+  时旧库缺列（如 `skills.market_key`）导致的启动崩溃。
+- 启动时确保单候选人占位行存在，修复空数据库首次学习市场技能或新增技能时
+  外键 `candidate_id = 1` 失败（`FOREIGN KEY constraint failed`）。
+
 ## [0.1.0] - 2026-11-21
 
 ### Added

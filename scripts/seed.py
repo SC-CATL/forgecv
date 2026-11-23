@@ -15,6 +15,7 @@ from forgecv.features.education.api import build_service as build_education
 from forgecv.features.education.schemas import EducationInput
 from forgecv.features.experience.api import build_service as build_experience
 from forgecv.features.experience.schemas import ExperienceInput
+from forgecv.features.market.api import build_service as build_market
 from forgecv.features.profile.api import build_service as build_profile
 from forgecv.features.profile.schemas import CandidateInput
 from forgecv.features.project.api import build_service as build_project
@@ -168,6 +169,7 @@ def seed_taxonomy(sessions: SessionFactory, project_id: int) -> None:
         ),
         "skill.evidence",
     )
+    take(build_market(sessions).learn("python"), "market.python")
 
 
 def seed_resume(sessions: SessionFactory, project_id: int) -> None:
